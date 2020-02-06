@@ -1,8 +1,8 @@
 //Imports
 importScripts('js/sw-utils.js');
 
-const STATIC_CACHE      = 'static-v3';
-const DYNAMIC_CACHE     = 'dynamic-v1';
+const STATIC_CACHE      = 'static-v4';
+const DYNAMIC_CACHE     = 'dynamic-v2';
 const INMUTABLE_CACHE   = 'inmutable-v1';
 
 /** CONST **/
@@ -28,6 +28,7 @@ const APP_SHELL_INMUTABLE = [
     'js/libs/jquery.js'
 ];
 
+/* INSTALL SW */
 self.addEventListener('install', e => {
 
     const cacheStatic = caches.open( STATIC_CACHE ).then( cache => {
@@ -38,10 +39,11 @@ self.addEventListener('install', e => {
         cache.addAll( APP_SHELL_INMUTABLE );
     });
 
-    e.waitUntil( Promise.all([cacheStatic, cacheInmutable]) );
+    e.waitUntil( Promise.all( [cacheStatic, cacheInmutable] ));
 
 });
 
+/* ACTIVATE SW */
 self.addEventListener('active', e => {
 
     const activation = caches.keys().then( keys => {
@@ -51,6 +53,11 @@ self.addEventListener('active', e => {
                 if(key !== STATIC_CACHE && key.includes('static')){
                     return caches.delete(key);
                 }
+
+                if(key !== DYNAMIC_CACHE && key.includes('dynamic')){
+                    return caches.delete(key);
+                }
+
             });
 
     });
@@ -59,6 +66,7 @@ self.addEventListener('active', e => {
 
 });
 
+/* Strtategy Cache: Network with cache fallback */
 self.addEventListener( 'fetch' , e => {
 
     const respuesta = caches.match( e.request ).then( resp  => {
@@ -73,7 +81,10 @@ self.addEventListener( 'fetch' , e => {
             });
         }
 
+    }).catch( err => {
+        console.log( err );
     });
+
 
     e.respondWith( respuesta );
 });
