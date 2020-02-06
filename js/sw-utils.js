@@ -5,7 +5,7 @@
 function updateCacheDynamic( dynamicCache, req , resp ){
 
     if( resp.ok ){
-        caches.open( dynamicCache ).then( cache => { 
+        return caches.open( dynamicCache ).then( cache => { 
 
             cache.put( req, resp.clone() );
             
