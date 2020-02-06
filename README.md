@@ -1,3 +1,3 @@
-# Twittor
+# PWA - Basic
 
-Un cascarón de chat usando jQuery para PWAs
+Estructura de chat usando jQuery para PWAs
